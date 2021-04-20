@@ -21,8 +21,7 @@ const config: webpack.Configuration = {
             presets: [
               "@babel/preset-env",
               "@babel/preset-react",
-              "@babel/preset-typescript",
-            ],
+              "@babel/preset-typescript"],
           },
         },
       },
@@ -47,7 +46,7 @@ const config: webpack.Configuration = {
   devServer: {
     contentBase: path.join(__dirname, "build"),
     historyApiFallback: true,
-    port: 3000,
+    port: 4000,
     open: true,
     hot: true,
   },
