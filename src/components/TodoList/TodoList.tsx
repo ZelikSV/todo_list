@@ -22,7 +22,7 @@ const TodoList: FC<Props> = ({ todos, removeTodoItem, editTodoItem }) => {
   const classes = useStyles();
 
   const sortedList = todos.sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    return new Date(b.updatedAt ?? b.createdAt).getTime() - new Date(a.updatedAt ?? a.createdAt).getTime();
   });
 
   return (
