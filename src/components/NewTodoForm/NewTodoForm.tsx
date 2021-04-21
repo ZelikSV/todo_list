@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import { ITodoItem, TodoStatus } from '../../types';
+import { Error, ITodoItem, TodoStatus } from '../../types';
 
 const useStyles = makeStyles(() => ({
   form: {
@@ -23,10 +23,23 @@ type Props = {
 
 const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
   const [todoText, setTodoText] = useState<string | null>(null);
+  const [{ isError, message }, setError] = useState<Error>({
+    isError: false,
+    message: '',
+  });
   const classes = useStyles();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+
+    if (!todoText) {
+      setError({
+        isError: true,
+        message: 'Field can not be empty',
+      });
+
+      return;
+    }
 
     createTodoItem({
       id: uuidv4(),
@@ -46,18 +59,20 @@ const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
 
   const handleTodoText = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setTodoText(evt.currentTarget.value);
+    setError({
+      isError: false,
+      message: '',
+    });
   };
 
   return (
     <form onSubmit={handleSubmit} className={classes.form}>
       <TextField
-        error={undefined}
+        error={isError}
         className={classes.todoText}
-        id="standard-error-helper-text"
         label="Todo"
-        defaultValue=""
         onChange={handleTodoText}
-        helperText=""
+        helperText={message}
       />
 
       <Button type="submit" variant="contained" color="primary">

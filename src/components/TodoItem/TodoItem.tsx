@@ -1,21 +1,17 @@
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
-import EditIcon from '@material-ui/icons/Edit';
-import Delete from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { ITodoItem, TodoStatus } from '../../types';
+import { Error, ITodoItem, TodoStatus } from '../../types';
 import { dateFormat } from '../../constants';
+import IconButton from '../IconButton/IconButton';
 
 type Props = {
   itemData: ITodoItem;
   removeTodoItem: (id: string) => () => void;
-  editTodoItem: (editedTodo: ITodoItem) => void;
+  updateTodoItem: (editedTodo: ITodoItem) => void;
 };
 
 const useStyles = makeStyles(() => ({
@@ -37,10 +33,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TodoItem: FC<Props> = ({ itemData, removeTodoItem, editTodoItem }) => {
+const TodoItem: FC<Props> = ({ itemData, removeTodoItem, updateTodoItem }) => {
   const classes = useStyles();
   const [todoItem, setTodoItem] = useState<ITodoItem>(itemData);
   const [text, setText] = useState('');
+  const [{ isError, message }, setError] = useState<Error>({
+    isError: false,
+    message: '',
+  });
 
   useEffect(() => {
     setTodoItem(itemData);
@@ -48,60 +48,73 @@ const TodoItem: FC<Props> = ({ itemData, removeTodoItem, editTodoItem }) => {
   }, [itemData, todoItem.text]);
 
   const saveUpdatedTodo = () => {
-    if (text) {
-      editTodoItem({
-        ...itemData,
-        text,
-        updatedAt: new Date().toISOString(),
-        status: TodoStatus.READ,
+    if (!text) {
+      setError({
+        isError: true,
+        message: 'Field can not be empty',
       });
+
+      return;
     }
+
+    updateTodoItem({
+      ...itemData,
+      text,
+      updatedAt: new Date().toISOString(),
+      status: TodoStatus.READ,
+    });
   };
 
   const handleTodoText = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setText(evt.target.value);
+    setError({
+      isError: false,
+      message: '',
+    });
   };
 
   const handleTodoEdit = () => {
     setTodoItem((prevState) => ({ ...prevState, status: TodoStatus.EDIT }));
   };
 
+  const todoDate = useMemo(
+    () =>
+      itemData.updatedAt ? dayjs(itemData.updatedAt).format(dateFormat) : dayjs(itemData.createdAt).format(dateFormat),
+    [itemData],
+  );
+
+  const todoItemContent = {
+    [TodoStatus.READ]: (
+      <>
+        <span>{itemData.text}</span>
+        <div className={classes.controls}>
+          <span>{todoDate}</span>
+          <IconButton color="primary" type="edit" clickHandler={handleTodoEdit} />
+          <IconButton color="secondary" type="delete" clickHandler={removeTodoItem(itemData.id)} />
+        </div>
+      </>
+    ),
+    [TodoStatus.EDIT]: (
+      <>
+        <TextField
+          error={isError}
+          autoFocus
+          className={classes.editInput}
+          defaultValue={itemData.text}
+          onChange={handleTodoText}
+          helperText={message}
+        />
+        <div className={classes.controls}>
+          <IconButton color="secondary" type="save" clickHandler={saveUpdatedTodo} />
+        </div>
+      </>
+    ),
+  };
+
   return (
-    <Grid xs={12} item key={itemData.id}>
-      {todoItem.status === TodoStatus.READ ? (
-        <Paper elevation={2} className={classes.todoWrapper}>
-          <span>{itemData.text}</span>
-          <div className={classes.controls}>
-            <span>
-              {itemData.updatedAt
-                ? dayjs(itemData.updatedAt).format(dateFormat)
-                : dayjs(itemData.createdAt).format(dateFormat)}
-            </span>
-            <IconButton color="primary" aria-label="Edit" onClick={handleTodoEdit}>
-              <EditIcon fontSize="small" />
-            </IconButton>
-            <IconButton color="secondary" aria-label="Delete" onClick={removeTodoItem(itemData.id)}>
-              <Delete fontSize="small" />
-            </IconButton>
-          </div>
-        </Paper>
-      ) : (
-        <Paper elevation={2} className={classes.todoWrapper}>
-          <TextField
-            error={undefined}
-            className={classes.editInput}
-            defaultValue={itemData.text}
-            onChange={handleTodoText}
-            helperText=""
-          />
-          <div className={classes.controls}>
-            <IconButton color="secondary" aria-label="Save" onClick={saveUpdatedTodo}>
-              <SaveIcon fontSize="small" />
-            </IconButton>
-          </div>
-        </Paper>
-      )}
-    </Grid>
+    <Paper elevation={2} className={classes.todoWrapper}>
+      {todoItemContent[todoItem.status]}
+    </Paper>
   );
 };
 

@@ -15,19 +15,20 @@ const App: FC = () => {
     setTodoState(todosList);
   }, []);
 
+  const updateData = (list: ITodoItem[]) => {
+    localStorage.setItem('todos', JSON.stringify(list));
+    setTodoState(list);
+  };
+
   const createTodoItem = (newTodo: ITodoItem) => {
-    localStorage.setItem('todos', JSON.stringify([...todoState, newTodo]));
-    setTodoState([...todoState, newTodo]);
+    updateData([...todoState, newTodo]);
   };
 
   const removeTodoItem = (id: string) => () => {
-    const clearedList = todoState.filter((item) => item.id !== id);
-
-    localStorage.setItem('todos', JSON.stringify(clearedList));
-    setTodoState(clearedList);
+    updateData(todoState.filter((item) => item.id !== id));
   };
 
-  const editTodoItem = (editedTodo: ITodoItem) => {
+  const updateTodoItem = (editedTodo: ITodoItem) => {
     const editedList = todoState.map((item) => {
       if (item.id === editedTodo.id) {
         return editedTodo;
@@ -35,9 +36,7 @@ const App: FC = () => {
 
       return item;
     });
-
-    localStorage.setItem('todos', JSON.stringify(editedList));
-    setTodoState(editedList);
+    updateData(editedList);
   };
 
   return (
@@ -46,7 +45,7 @@ const App: FC = () => {
         Todo List
       </Typography>
       <NewTodoForm createTodoItem={createTodoItem} />
-      <TodoList todos={todoState} removeTodoItem={removeTodoItem} editTodoItem={editTodoItem} />
+      <TodoList todos={todoState} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />
     </div>
   );
 };

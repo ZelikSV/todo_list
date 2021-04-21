@@ -11,3 +11,8 @@ export interface ITodoItem {
   updatedAt?: string;
   status: TodoStatus;
 }
+
+export type Error = {
+  isError: boolean;
+  message: string;
+};
