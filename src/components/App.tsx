@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { ITodoItem } from '../types';
 import TodoList from './TodoList/TodoList';
 import NewTodoForm from './NewTodoForm/NewTodoForm';
-import Store from '../store';
+import Store from '../utils/store';
 
 const App: FC = () => {
   const api = new Store<ITodoItem>('todos', []);
