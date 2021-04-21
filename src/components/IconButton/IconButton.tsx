@@ -19,7 +19,7 @@ const IconButton: FC<Props> = ({ clickHandler, type, color }) => {
   };
 
   return (
-    <MUIconButton color={color} aria-label={type} onClick={clickHandler}>
+    <MUIconButton data-testid={`IconBtn__${type}`} color={color} aria-label={type} onClick={clickHandler}>
       {config[type]}
     </MUIconButton>
   );

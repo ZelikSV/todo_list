@@ -4,19 +4,20 @@ import Typography from '@material-ui/core/Typography';
 import { ITodoItem } from '../types';
 import TodoList from './TodoList/TodoList';
 import NewTodoForm from './NewTodoForm/NewTodoForm';
+import Store from '../store';
 
 const App: FC = () => {
+  const api = new Store<ITodoItem>('todos', []);
   const [todoState, setTodoState] = useState<ITodoItem[]>([]);
   useEffect(() => {
-    const todosList = localStorage.getItem('todos')
-      ? (JSON.parse(localStorage.getItem('todos') as string) as ITodoItem[])
-      : [];
+    const todosList = api.getTodos;
 
     setTodoState(todosList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateData = (list: ITodoItem[]) => {
-    localStorage.setItem('todos', JSON.stringify(list));
+    api.setTodos(list);
     setTodoState(list);
   };
 
