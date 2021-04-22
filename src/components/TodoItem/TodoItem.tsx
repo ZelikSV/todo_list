@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     padding: 16,
-    margin: '20px 0',
+    marginBottom: 16,
   },
   controls: {
     display: 'flex',
@@ -112,7 +112,7 @@ const TodoItem: FC<Props> = ({ itemData, removeTodoItem, updateTodoItem }) => {
   };
 
   return (
-    <Paper elevation={2} className={classes.todoWrapper}>
+    <Paper data-testid="todo-item" elevation={2} className={classes.todoWrapper}>
       {todoItemContent[todoItem.status]}
     </Paper>
   );

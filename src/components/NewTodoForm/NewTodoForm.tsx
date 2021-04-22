@@ -10,6 +10,7 @@ const useStyles = makeStyles(() => ({
   form: {
     display: 'flex',
     justifyContent: 'center',
+    marginBottom: 16,
   },
   todoText: {
     width: '60%',
@@ -50,11 +51,7 @@ const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
     });
 
     setTodoText(null);
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    e.currentTarget.reset();
+    (e.currentTarget as HTMLFormElement).reset();
   };
 
   const handleTodoText = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -66,16 +63,18 @@ const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={classes.form}>
+    <form onSubmit={handleSubmit} className={classes.form} data-testid="todo-form">
       <TextField
+        data-testid="textField-testid"
         error={isError}
         className={classes.todoText}
         label="Todo"
+        name="todo"
         onChange={handleTodoText}
         helperText={message}
       />
 
-      <Button type="submit" variant="contained" color="primary">
+      <Button type="submit" variant="contained" color="primary" data-testid="submit-btn">
         Add
       </Button>
     </form>
