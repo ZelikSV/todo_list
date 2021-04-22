@@ -10,7 +10,7 @@ import IconButton from '../IconButton/IconButton';
 
 type Props = {
   itemData: ITodoItem;
-  removeTodoItem: (id: string) => () => void;
+  removeTodoItem: () => void;
   updateTodoItem: (editedTodo: ITodoItem) => void;
 };
 
@@ -90,7 +90,7 @@ const TodoItem: FC<Props> = ({ itemData, removeTodoItem, updateTodoItem }) => {
         <div className={classes.controls}>
           <span>{todoDate}</span>
           <IconButton color="primary" type="edit" clickHandler={handleTodoEdit} />
-          <IconButton color="secondary" type="delete" clickHandler={removeTodoItem(itemData.id)} />
+          <IconButton color="secondary" type="delete" clickHandler={removeTodoItem} />
         </div>
       </>
     ),

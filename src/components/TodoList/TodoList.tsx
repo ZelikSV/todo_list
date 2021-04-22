@@ -36,7 +36,12 @@ const TodoList: FC<Props> = ({ todos, removeTodoItem, updateTodoItem }) => {
     <div data-testid="todo-list" className={classes.container}>
       {sortedList.length ? (
         sortedList.map((item) => (
-          <TodoItem key={item.id} itemData={item} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />
+          <TodoItem
+            key={item.id}
+            itemData={item}
+            removeTodoItem={removeTodoItem(item.id)}
+            updateTodoItem={updateTodoItem}
+          />
         ))
       ) : (
         <Typography variant="h5" component="h2" align="center" className={classes.placeholder}>
