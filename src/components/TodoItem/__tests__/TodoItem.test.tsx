@@ -67,6 +67,44 @@ describe('TodoItem component tests', () => {
     expect(updateTodoItem).toHaveBeenCalledTimes(1);
   });
 
+  it('TodoItem should be editable', () => {
+    const { getByTestId } = render(
+      <TodoItem
+        itemData={{ ...item, status: TodoStatus.EDIT }}
+        removeTodoItem={removeTodoItem}
+        updateTodoItem={updateTodoItem}
+      />,
+    );
+
+    fireEvent.change(getByTestId('edit-field'), {
+      target: {
+        value: 'Some test',
+      },
+    });
+
+    expect(getByTestId('edit-field')).toHaveValue('Some test');
+  });
+
+  it('TextInput should not be empty', () => {
+    const { getByTestId } = render(
+      <TodoItem
+        itemData={{ ...item, status: TodoStatus.EDIT }}
+        removeTodoItem={removeTodoItem}
+        updateTodoItem={updateTodoItem}
+      />,
+    );
+
+    fireEvent.change(getByTestId('edit-field'), {
+      target: {
+        value: '',
+      },
+    });
+
+    fireEvent.click(getByTestId('IconBtn__save'));
+
+    expect(getByTestId('todo-item')).toHaveTextContent('Field can not be empty');
+  });
+
   it('RemoveTodoItem should be called on delete', () => {
     const { getByTestId } = render(
       <TodoItem itemData={item} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />,

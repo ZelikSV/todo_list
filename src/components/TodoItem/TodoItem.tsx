@@ -97,6 +97,9 @@ const TodoItem: FC<Props> = ({ itemData, removeTodoItem, updateTodoItem }) => {
     [TodoStatus.EDIT]: (
       <>
         <TextField
+          inputProps={{
+            'data-testid': 'edit-field',
+          }}
           error={isError}
           autoFocus
           className={classes.editInput}
