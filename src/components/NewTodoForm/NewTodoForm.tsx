@@ -65,7 +65,9 @@ const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
   return (
     <form onSubmit={handleSubmit} className={classes.form} data-testid="todo-form">
       <TextField
-        data-testid="textField-testid"
+        inputProps={{
+          'data-testid': 'new-todo-field',
+        }}
         error={isError}
         className={classes.todoText}
         label="Todo"

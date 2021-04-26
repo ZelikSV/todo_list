@@ -23,7 +23,7 @@ describe('TodoItem component tests', () => {
     expect(getByTestId('todo-item')).toBeInTheDocument();
   });
 
-  it('TodoItem include status read', () => {
+  it('TodoItem should include buttons edit and delete on status read', () => {
     const { getByTestId } = render(
       <TodoItem itemData={item} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />,
     );
@@ -32,7 +32,7 @@ describe('TodoItem component tests', () => {
     expect(getByTestId('IconBtn__delete')).toBeInTheDocument();
   });
 
-  it('TodoItem include status edit', () => {
+  it('TodoItem should include button save on status edit', () => {
     const { getByTestId } = render(
       <TodoItem
         itemData={{ ...item, status: TodoStatus.EDIT }}

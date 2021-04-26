@@ -34,6 +34,7 @@ describe('TodoList component tests', () => {
         status: TodoStatus.READ,
       },
     ];
+
     const { getByTestId } = render(
       <TodoList todos={todos} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />,
     );
