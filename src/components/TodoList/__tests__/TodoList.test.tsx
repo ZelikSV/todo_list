@@ -42,7 +42,7 @@ describe('TodoList component tests', () => {
     expect(getByTestId('todo-item')).toHaveTextContent('Some todo');
   });
 
-  it('TodoList includes a few sorted todos', () => {
+  it('TodoList includes a few sorted todos when first todo has not updatedAt', () => {
     const todos = [
       {
         id: 'simple-id-1',
@@ -65,5 +65,30 @@ describe('TodoList component tests', () => {
 
     expect(getAllByTestId('todo-item')).toHaveLength(2);
     expect(getAllByTestId('todo-item')[0]).toHaveTextContent('Some todo 2');
+  });
+
+  it('TodoList includes a few sorted todos when second todo has not updatedAt', () => {
+    const todos = [
+      {
+        id: 'simple-id-1',
+        text: 'Some todo 1',
+        createdAt: '2021-04-22T07:32:07.663Z',
+        updatedAt: '2021-04-23T07:32:07.663Z',
+        status: TodoStatus.READ,
+      },
+      {
+        id: 'simple-id-2',
+        text: 'Some todo 2',
+        createdAt: '2021-04-22T07:32:07.663Z',
+        status: TodoStatus.READ,
+      },
+    ];
+
+    const { getAllByTestId } = render(
+      <TodoList todos={todos} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />,
+    );
+
+    expect(getAllByTestId('todo-item')).toHaveLength(2);
+    expect(getAllByTestId('todo-item')[0]).toHaveTextContent('Some todo 1');
   });
 });
