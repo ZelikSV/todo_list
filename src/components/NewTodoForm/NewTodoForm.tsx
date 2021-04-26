@@ -44,7 +44,7 @@ const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
 
     createTodoItem({
       id: uuidv4(),
-      text: todoText ?? '',
+      text: todoText,
       createdAt: new Date().toISOString(),
       updatedAt: undefined,
       status: TodoStatus.READ,

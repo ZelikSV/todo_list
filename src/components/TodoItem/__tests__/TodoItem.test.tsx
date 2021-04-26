@@ -113,4 +113,24 @@ describe('TodoItem component tests', () => {
     fireEvent.click(getByTestId('IconBtn__delete'));
     expect(removeTodoItem).toHaveBeenCalledTimes(1);
   });
+
+  it('TodoItem should show date created it', () => {
+    const { getByTestId } = render(
+      <TodoItem itemData={item} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />,
+    );
+
+    expect(getByTestId('todo-item-time')).toHaveTextContent('04/22/2021 10:32');
+  });
+
+  it('TodoItem should show date updated it', () => {
+    const { getByTestId } = render(
+      <TodoItem
+        itemData={{ ...item, updatedAt: '2021-04-23T07:32:07.663Z' }}
+        removeTodoItem={removeTodoItem}
+        updateTodoItem={updateTodoItem}
+      />,
+    );
+
+    expect(getByTestId('todo-item-time')).toHaveTextContent('04/23/2021 10:32');
+  });
 });

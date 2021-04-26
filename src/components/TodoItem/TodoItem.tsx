@@ -88,7 +88,7 @@ const TodoItem: FC<Props> = ({ itemData, removeTodoItem, updateTodoItem }) => {
       <>
         <span>{itemData.text}</span>
         <div className={classes.controls}>
-          <span>{todoDate}</span>
+          <span data-testid="todo-item-time">{todoDate}</span>
           <IconButton color="primary" type="edit" clickHandler={handleTodoEdit} />
           <IconButton color="secondary" type="delete" clickHandler={removeTodoItem} />
         </div>
