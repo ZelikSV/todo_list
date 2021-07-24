@@ -1,12 +1,13 @@
-import React, { FC, useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
+import React, { useEffect, useState } from 'react';
+import { Typography } from 'antd';
 
-import { ITodoItem } from '../types';
-import TodoList from './TodoList/TodoList';
-import NewTodoForm from './NewTodoForm/NewTodoForm';
+import NewTodoForm from '../components/NewTodoForm/NewTodoForm';
+import TodoList from '../components/TodoList/TodoList';
 import Store from '../utils/store';
+import { ITodoItem } from '../types';
 
-const App: FC = () => {
+const { Title } = Typography;
+const Todo = () => {
   const api = new Store<ITodoItem>('todos', []);
   const [todoState, setTodoState] = useState<ITodoItem[]>([]);
   useEffect(() => {
@@ -42,13 +43,11 @@ const App: FC = () => {
 
   return (
     <div>
-      <Typography variant="h5" component="h2">
-        Todo List
-      </Typography>
+      <Title>Todo List</Title>
       <NewTodoForm createTodoItem={createTodoItem} />
       <TodoList todos={todoState} removeTodoItem={removeTodoItem} updateTodoItem={updateTodoItem} />
     </div>
   );
 };
 
-export default App;
+export default Todo;

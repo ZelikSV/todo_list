@@ -1,84 +1,68 @@
-import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
+import React, { FC } from 'react';
+import { Row, Col } from 'antd';
+import { useForm, Controller } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { superstructResolver } from '@hookform/resolvers/superstruct';
 
-import { Error, ITodoItem, TodoStatus } from '../../types';
-
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  todoText: {
-    width: '60%',
-    marginRight: 10,
-  },
-}));
+import { TextField, Button } from '../Form';
+import { ITodoItem, TodoStatus } from '../../types';
+import { TodoValues, schema, initialValues } from './TodoForm.schema';
 
 type Props = {
   createTodoItem: (item: ITodoItem) => void;
 };
 
 const NewTodoForm: FC<Props> = ({ createTodoItem }) => {
-  const [todoText, setTodoText] = useState<string | null>(null);
-  const [{ isError, message }, setError] = useState<Error>({
-    isError: false,
-    message: '',
+  const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: superstructResolver(schema),
+    defaultValues: initialValues,
   });
-  const classes = useStyles();
 
-  const handleSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-
-    if (!todoText) {
-      setError({
-        isError: true,
-        message: 'Field can not be empty',
-      });
-
+  const onSubmit = (values: TodoValues) => {
+    if (!values.todo) {
       return;
     }
 
     createTodoItem({
       id: uuidv4(),
-      text: todoText,
+      text: values.todo,
       createdAt: new Date().toISOString(),
       updatedAt: undefined,
       status: TodoStatus.READ,
     });
 
-    setTodoText(null);
-    (e.currentTarget as HTMLFormElement).reset();
-  };
-
-  const handleTodoText = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setTodoText(evt.currentTarget.value);
-    setError({
-      isError: false,
-      message: '',
-    });
+    reset({ todo: null });
   };
 
   return (
-    <form onSubmit={handleSubmit} className={classes.form} data-testid="todo-form">
-      <TextField
-        inputProps={{
-          'data-testid': 'new-todo-field',
-        }}
-        error={isError}
-        className={classes.todoText}
-        label="Todo"
-        name="todo"
-        onChange={handleTodoText}
-        helperText={message}
-      />
-
-      <Button type="submit" variant="contained" color="primary" data-testid="submit-btn">
-        Add
-      </Button>
+    <form onSubmit={handleSubmit(onSubmit)} data-testid="todo-form">
+      <Row align="middle">
+        <Col>
+          <Controller
+            name="todo"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <TextField
+                allowClear
+                placeholder="Todo"
+                value={value}
+                onChange={onChange}
+                testId="new-todo-field"
+                error={(errors as undefined | { todo: { message: string } })?.todo?.message}
+              />
+            )}
+          />
+        </Col>
+        <Col>
+          <Button label="Add" disabled={!watch('todo')} type="primary" htmlType="submit" data-testid="submit-btn" />
+        </Col>
+      </Row>
     </form>
   );
 };
